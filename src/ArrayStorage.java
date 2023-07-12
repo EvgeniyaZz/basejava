@@ -31,17 +31,23 @@ public class ArrayStorage {
     void delete(String uuid) {
         for(int i = 0; i < quantityResume; i++) {
             if(storage[i].uuid.equals(uuid)) {
-                System.arraycopy(storage, i + 1, storage, i, quantityResume - 1 - i);
+                if(i != storage.length - 1) {
+                    System.arraycopy(storage, i + 1, storage, i, quantityResume - 1 - i);
+                    storage[quantityResume - 1] = null;
+                } else {
+                    storage[i] = null;
+                }
+                quantityResume--;
+                break;
             }
         }
-        quantityResume--;
     }
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        return Arrays.copyOfRange(storage, 0, quantityResume);
+        return Arrays.copyOf(storage, quantityResume);
     }
 
     int size() {
