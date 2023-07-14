@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class ArrayStorage {
 
     private int quantityResume;
-    Resume[] storage = new Resume[10000];
+    protected final Resume[] storage = new Resume[10000];
 
     public void clear() {
         Arrays.fill(storage, 0, quantityResume, null);
@@ -17,11 +17,10 @@ public class ArrayStorage {
     }
 
     public void update(Resume resume) {
-        for(int i = 0; i < quantityResume; i++) {
-            if(sameUuid(i, resume.getUuid())) {
-                storage[i] = resume;
-                return;
-            }
+        int index = getIndex(resume.getUuid());
+        if(isExist(index)) {
+            storage[index] = resume;
+            return;
         }
         System.out.println("Резюме " + resume.getUuid() + " не найдено");
     }
@@ -32,39 +31,31 @@ public class ArrayStorage {
             return;
         }
         if(quantityResume > 0) {
-            for(int i = 0; i < quantityResume; i++) {
-                if(sameUuid(i, resume.getUuid())) {
-                    System.out.println("Резюме " + resume.getUuid() + " уже существует");
-                    return;
-                }
+            if(isExist(getIndex(resume.getUuid()))) {
+                System.out.println("Резюме " + resume.getUuid() + " уже существует");
+                return;
             }
         }
         storage[quantityResume++] = resume;
     }
 
     public Resume get(String uuid) {
-        for(int i = 0; i < quantityResume; i++) {
-            if(sameUuid(i, uuid)) {
-                return storage[i];
-            }
+        int index = getIndex(uuid);
+        if(isExist(index)) {
+            return storage[index];
         }
         return null;
     }
 
     public void delete(String uuid) {
-        for(int i = 0; i < quantityResume; i++) {
-            if(sameUuid(i, uuid)) {
-                if(i != storage.length - 1) {
-                    System.arraycopy(storage, i + 1, storage, i, quantityResume - 1 - i);
-                    storage[quantityResume - 1] = null;
-                } else {
-                    storage[i] = null;
-                }
-                quantityResume--;
-                break;
-            }
+        int index = getIndex(uuid);
+        if(isExist(index)) {
+            storage[index] = storage[quantityResume - 1];
+            storage[quantityResume - 1] = null;
+            quantityResume--;
+        } else {
+            System.out.println("Резюме " + uuid + " не найдено");
         }
-        System.out.println("Резюме " + uuid + " не найдено");
     }
 
     /**
@@ -78,7 +69,16 @@ public class ArrayStorage {
         return quantityResume;
     }
 
-    private boolean sameUuid(int i, String uuid) {
-        return storage[i].getUuid().equals(uuid);
+    protected int getIndex(String uuid) {
+        for(int i = 0; i < quantityResume; i++) {
+            if(storage[i].getUuid().equals(uuid)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    protected boolean isExist(int index) {
+        return index >= 0;
     }
 }
