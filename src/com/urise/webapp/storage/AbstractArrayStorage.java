@@ -1,52 +1,43 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.ExistStorageException;
-import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
 
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
 
     protected static final int STORAGE_LIMIT = 10000;
     protected int quantityResume;
-    public final Resume[] storage = new Resume[STORAGE_LIMIT];
+    protected final Resume[] storage = new Resume[STORAGE_LIMIT];
 
     public final void clear() {
         Arrays.fill(storage, 0, quantityResume, null);
         quantityResume = 0;
     }
 
-    public final void update(Resume resume) {
+    public final void updateResume(Resume resume) {
         int index = getIndex(resume.getUuid());
-        if(isExist(index)) {
-            storage[index] = resume;
-            return;
-        }
-        throw new NotExistStorageException(resume.getUuid());
+        storage[index] = resume;
     }
 
-    public final void save(Resume resume) {
+    public final void saveResume(Resume resume) {
         if(quantityResume >= STORAGE_LIMIT) {
             throw new StorageException("Storage overflow", resume.getUuid());
-        } else if(isExist(getIndex(resume.getUuid()))) {
-            throw new ExistStorageException(resume.getUuid());
         } else {
-            saveResume(resume);
+            insertElement(resume);
             quantityResume++;
         }
     }
 
-    public final void delete(String uuid) {
-        int index = getIndex(uuid);
-        if(isExist(index)) {
-            deleteResume(index);
-            storage[quantityResume - 1] = null;
-            quantityResume--;
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+    public final Resume getResume(String uuid) {
+        return storage[getIndex(uuid)];
+    }
+
+    public final void deleteResume(String uuid) {
+        fillDeletedElement(getIndex(uuid));
+        storage[quantityResume - 1] = null;
+        quantityResume--;
     }
 
     public final Resume[] getAll() {
@@ -57,21 +48,7 @@ public abstract class AbstractArrayStorage implements Storage {
         return quantityResume;
     }
 
-    public final Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if(isExist(index)) {
-            return storage[index];
-        }
-        throw new NotExistStorageException(uuid);
-    }
+    protected abstract void insertElement(Resume resume);
 
-    protected final boolean isExist(int index) {
-        return index >= 0;
-    }
-
-    protected abstract void saveResume(Resume resume);
-
-    protected abstract void deleteResume(int index);
-
-    protected abstract int getIndex(String uuid);
+    protected abstract void fillDeletedElement(int index);
 }

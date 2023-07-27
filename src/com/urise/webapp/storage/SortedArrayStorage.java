@@ -7,14 +7,14 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage{
 
     @Override
-    protected void saveResume(Resume resume) {
+    protected void insertElement(Resume resume) {
         int index = (Arrays.binarySearch(storage, 0, quantityResume, resume) * -1) - 1;
         System.arraycopy(storage, index, storage, index + 1, quantityResume - index);
         storage[index] = resume;
     }
 
     @Override
-    public void deleteResume(int index) {
+    public void fillDeletedElement(int index) {
         if(index < quantityResume - 1) {
             System.arraycopy(storage, index + 1, storage, index, quantityResume - 1 - index);
         }

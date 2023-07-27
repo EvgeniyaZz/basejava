@@ -13,6 +13,7 @@ public abstract class AbstractArrayStorageTest {
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
     private static final String UUID_3 = "uuid3";
+    private static final String UUID_4 = "uuid4";
     private static final String UUID_NOT_EXIST = "dummy";
 
     private final Storage storage;
@@ -42,15 +43,18 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void update() {
-        storage.update(storage.get(UUID_1));
-        Assert.assertEquals(r1, storage.get(UUID_1));
+        Resume r5 = new Resume(UUID_1);
+        storage.update(r5);
+        Assert.assertEquals(r5, storage.get(UUID_1));
     }
 
     @Test
     public void save() {
-        Resume r4 = new Resume("uuid4");
+        Resume r4 = new Resume(UUID_4);
         storage.save(r4);
-        Assert.assertEquals(r4, storage.get("uuid4"));
+        Assert.assertEquals(r4, storage.get(UUID_4));
+        assertGet(r4);
+        assertSize(4);
     }
 
     @Test(expected = NotExistStorageException.class)
