@@ -52,7 +52,6 @@ public abstract class AbstractArrayStorageTest {
     public void save() {
         Resume r4 = new Resume(UUID_4);
         storage.save(r4);
-        Assert.assertEquals(r4, storage.get(UUID_4));
         assertGet(r4);
         assertSize(4);
     }

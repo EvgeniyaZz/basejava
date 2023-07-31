@@ -6,9 +6,9 @@ import com.urise.webapp.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
-public class ListStorageTest {
+public class MapStorageTest {
 
     private static final String UUID_1 = "uuid1";
     private static final String UUID_2 = "uuid2";
@@ -20,7 +20,7 @@ public class ListStorageTest {
     private static final Resume R2 = new Resume(UUID_2);
     private static final Resume R3 = new Resume(UUID_3);
 
-    private static final Storage STORAGE = new ListStorage();
+    private static final Storage STORAGE = new MapStorage();
 
     @Before
     public void setUp() {
@@ -67,11 +67,20 @@ public class ListStorageTest {
 
     @Test
     public void getAll() {
+        Resume[] expectedResumes = {R1, R2, R3};
         Resume[] allResumes = STORAGE.getAll();
         assertEquals(3, allResumes.length);
-        assertEquals(R1, allResumes[0]);
-        assertEquals(R2, allResumes[1]);
-        assertEquals(R3, allResumes[2]);
+        int same = 0;
+        for(Resume r : allResumes) {
+            for (int j = 0; j < allResumes.length; j++) {
+                if (r.equals(expectedResumes[j])) {
+                    expectedResumes[j] = null;
+                    same++;
+                    break;
+                }
+            }
+        }
+        assertEquals(3, same);
     }
 
     @Test
