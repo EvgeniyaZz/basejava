@@ -7,6 +7,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class AbstractStorageTest {
 
     private static final String FULL_NAME_1 = "Захарова Евгения";
@@ -72,9 +75,9 @@ public abstract class AbstractStorageTest {
         for(Resume r : storage.getAll()) {
             System.out.println(r.getFullName());
         }
-
+        List<Resume> sortedStorage = new ArrayList<>(storage.getAllSorted());
         System.out.println("");
-        for(Resume r : storage.getAllSorted()) {
+        for(Resume r : sortedStorage) {
             System.out.println(r.getFullName());
         }
     }

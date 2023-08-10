@@ -3,6 +3,7 @@ package com.urise.webapp.storage;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
 
     @Override
     public final List<Resume> getNotSorted() {
-        return List.of();
+        return new ArrayList<>(Arrays.asList(Arrays.copyOf(storage, quantityResume)));
     }
 
     public final int size() {
