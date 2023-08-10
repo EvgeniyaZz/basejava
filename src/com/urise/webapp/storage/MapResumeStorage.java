@@ -2,9 +2,7 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-import java.util.Map;
-
-public class MapResumeStorage extends MapStorage {
+public class MapResumeStorage extends AbstractMapStorage {
 
     @Override
     protected void doUpdate(Resume resume, Object searchKey) {
@@ -22,17 +20,12 @@ public class MapResumeStorage extends MapStorage {
     }
 
     @Override
-    protected Object getSearchKey(String uuid) {
-        return new Resume(uuid);
+    protected Resume getSearchKey(String uuid) {
+        return STORAGE.get(uuid);
     }
 
     @Override
     protected boolean isExist(Object searchKey) {
-        for(Map.Entry<String, Resume> entry : STORAGE.entrySet()) {
-            if(searchKey.equals(entry.getValue())) {
-                return true;
-            }
-        }
-        return false;
+        return searchKey != null;
     }
 }

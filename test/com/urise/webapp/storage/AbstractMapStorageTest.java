@@ -5,9 +5,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public abstract class MapStorageTest extends AbstractStorageTest{
+public abstract class AbstractMapStorageTest extends AbstractStorageTest{
 
-    public MapStorageTest(Storage storage) {
+    public AbstractMapStorageTest(Storage storage) {
         super(storage);
     }
 

@@ -4,7 +4,7 @@ import com.urise.webapp.model.Resume;
 
 import java.util.Map;
 
-public class MapUuidStorage extends MapStorage {
+public class MapUuidStorage extends AbstractMapStorage {
 
     @Override
     protected void doUpdate(Resume resume, Object searchKey) {
@@ -22,7 +22,7 @@ public class MapUuidStorage extends MapStorage {
     }
 
     @Override
-    protected Object getSearchKey(String uuid) {
+    protected String getSearchKey(String uuid) {
         return uuid;
     }
 

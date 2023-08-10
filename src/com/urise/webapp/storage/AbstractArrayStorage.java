@@ -44,8 +44,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return Arrays.copyOf(storage, quantityResume);
     }
 
-    public final List<Resume> getAllSorted() {
-        Arrays.sort(storage, 0, quantityResume, RESUME_COMPARATOR_FULL_NAME);
+    @Override
+    public final List<Resume> getNotSorted() {
         return List.of();
     }
 

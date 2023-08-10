@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class MapStorage extends AbstractStorage {
+public abstract class AbstractMapStorage extends AbstractStorage {
 
     protected static final Map<String, Resume> STORAGE = new HashMap<>();
 
@@ -26,8 +26,8 @@ public abstract class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        return STORAGE.values().stream().sorted(RESUME_COMPARATOR_FULL_NAME).toList();
+    public List<Resume> getNotSorted() {
+        return STORAGE.values().stream().toList();
     }
 
     @Override
