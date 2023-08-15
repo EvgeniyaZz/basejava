@@ -7,9 +7,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class AbstractStorageTest {
 
     private static final String FULL_NAME_1 = "Захарова Евгения";
@@ -40,7 +37,7 @@ public abstract class AbstractStorageTest {
     public void clear() {
         storage.clear();
         assertSize(0);
-        Assert.assertArrayEquals(new Resume[0], storage.getAll());
+        Assert.assertArrayEquals(new Resume[0], storage.getAllSorted().toArray());
     }
 
     @Test
@@ -66,18 +63,8 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    public void getAll() {
-        Assert.assertArrayEquals(allResumes, storage.getAll());
-    }
-
-    @Test
     public void getAllSorted() {
-        for(Resume r : storage.getAll()) {
-            System.out.println(r.getFullName());
-        }
-        List<Resume> sortedStorage = new ArrayList<>(storage.getAllSorted());
-        System.out.println("");
-        for(Resume r : sortedStorage) {
+        for(Resume r : storage.getAllSorted()) {
             System.out.println(r.getFullName());
         }
     }

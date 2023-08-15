@@ -5,7 +5,7 @@ import com.urise.webapp.model.Resume;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
 
     private static final List<Resume> STORAGE = new ArrayList<>();
 
@@ -15,28 +15,23 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    public void doUpdate(Resume resume, Object searchKey) {
-        STORAGE.set((Integer) searchKey, resume);
+    public void doUpdate(Resume resume, Integer searchKey) {
+        STORAGE.set(searchKey, resume);
     }
 
     @Override
-    public void doSave(Resume resume, Object searchKey) {
+    public void doSave(Resume resume, Integer searchKey) {
         STORAGE.add(resume);
     }
 
     @Override
-    public Resume doGet(Object searchKey) {
-        return STORAGE.get((Integer) searchKey);
+    public Resume doGet(Integer searchKey) {
+        return STORAGE.get(searchKey);
     }
 
     @Override
-    public void doDelete(String uuid, Object searchKey) {
+    public void doDelete(String uuid, Integer searchKey) {
         STORAGE.remove(get(uuid));
-    }
-
-    @Override
-    public Resume[] getAll() {
-        return STORAGE.toArray(new Resume[0]);
     }
 
     @Override
@@ -50,12 +45,12 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return (int) searchKey >= 0;
+    protected boolean isExist(Integer searchKey) {
+        return searchKey >= 0;
     }
 
     @Override
-    protected Object getSearchKey(String uuid) {
+    protected Integer getSearchKey(String uuid) {
         for(int i = 0; i < STORAGE.size(); i++) {
             if(STORAGE.get(i).getUuid().equals(uuid)) {
                 return i;

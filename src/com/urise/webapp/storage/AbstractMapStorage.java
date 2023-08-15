@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class AbstractMapStorage extends AbstractStorage {
+public abstract class AbstractMapStorage<Object> extends AbstractStorage<Object> {
 
     protected static final Map<String, Resume> STORAGE = new HashMap<>();
 
@@ -18,11 +18,6 @@ public abstract class AbstractMapStorage extends AbstractStorage {
     @Override
     protected void doDelete(String uuid, Object searchKey) {
         STORAGE.remove(uuid);
-    }
-
-    @Override
-    public Resume[] getAll() {
-        return STORAGE.values().toArray(new Resume[0]);
     }
 
     @Override
