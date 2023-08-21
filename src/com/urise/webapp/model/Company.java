@@ -14,6 +14,18 @@ public class Company {
         this.period = period;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public List<Period> getPeriod() {
+        return period;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
