@@ -6,8 +6,9 @@ import java.util.Objects;
 public class ListSection extends Section {
     private final List<String> list;
 
-    public ListSection(List<String> info) {
-        this.list = info;
+    public ListSection(List<String> list) {
+        Objects.requireNonNull(list, "list must not be null");
+        this.list = list;
     }
 
     public List<String> getList() {

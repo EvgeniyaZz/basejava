@@ -40,16 +40,16 @@ public class Resume {
         contacts.put(type, text);
     }
 
-    public Map<ContactType, String> getContacts() {
-        return contacts;
+    public String getContact(ContactType type) {
+        return contacts.get(type);
     }
 
     public void setSections(SectionType type, Section text) {
         sections.put(type, text);
     }
 
-    public Map<SectionType, Section> getSections() {
-        return sections;
+    public Section getSection(SectionType type) {
+        return sections.get(type);
     }
 
     @Override

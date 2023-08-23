@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResumeTestData {
-    public static void main(String[] args) {
-        Resume newResume = new Resume("Григорий Кислин");
+    public Resume createResume(String fullName) {
+        Resume newResume = new Resume(fullName);
 
         newResume.setContact(ContactType.PHONE, "+7(921) 855-0482");
         newResume.setContact(ContactType.SKYPE, "grigory.kislin");
@@ -204,14 +204,6 @@ public class ResumeTestData {
 
         newResume.setSections(SectionType.EDUCATION, new CompanySection(organizations));
 
-        for(ContactType type : ContactType.values()) {
-            System.out.print(type.getTitle() + " ");
-            System.out.println(newResume.getContacts().get(type));
-        }
-
-        for (SectionType type : SectionType.values()) {
-            System.out.println(type.getTitle());
-            System.out.println(newResume.getSections().get(type));
-        }
+        return newResume;
     }
 }
