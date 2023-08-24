@@ -42,7 +42,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    public final List<Resume> getNotSorted() {
+    public final List<Resume> getAll() {
         return new ArrayList<>(Arrays.asList(Arrays.copyOf(storage, quantityResume)));
     }
 

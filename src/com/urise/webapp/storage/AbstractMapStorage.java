@@ -21,7 +21,7 @@ public abstract class AbstractMapStorage<Object> extends AbstractStorage<Object>
     }
 
     @Override
-    public List<Resume> getNotSorted() {
+    public List<Resume> getAll() {
         return STORAGE.values().stream().toList();
     }
 

@@ -29,8 +29,10 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         if (list != null) {
             for (String s : list) {
                 File file = new File(directory + File.separator + s);
-                file.delete();
+                doDelete(s, file);
             }
+        } else {
+            throw new NullPointerException(directory.getAbsolutePath() + " is not directory or not readable/writable");
         }
     }
 
@@ -68,18 +70,16 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     }
 
     @Override
-    protected List<Resume> getNotSorted() {
+    protected List<Resume> getAll() {
         List<Resume> allResume = new ArrayList<>();
         String[] list = directory.list();
         if (list != null) {
             for (String s : list) {
                 File file = new File(directory + File.separator + s);
-                try {
-                    allResume.add(doRead(file));
-                } catch (IOException e) {
-                    throw new StorageException("IO error", file.getName(), e);
-                }
+                allResume.add(doGet(file));
             }
+        } else {
+            throw new NullPointerException(directory.getAbsolutePath() + " is not directory or not readable/writable");
         }
         return allResume;
     }
@@ -89,8 +89,9 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         String[] list = directory.list();
         if (list != null) {
             return list.length;
+        } else {
+            throw new NullPointerException(directory.getAbsolutePath() + " is not directory or not readable/writable");
         }
-        return 0;
     }
 
     @Override

@@ -31,7 +31,7 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     public final List<Resume> getAllSorted() {
         LOG.info("GetAllSorted");
-        List<Resume> storage = new ArrayList<>(getNotSorted());
+        List<Resume> storage = new ArrayList<>(getAll());
         storage.sort(RESUME_COMPARATOR_FULL_NAME);
         return storage;
     }
@@ -71,5 +71,5 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     protected abstract void doDelete(String uuid, SK searchKey);
 
-    protected abstract List<Resume> getNotSorted();
+    protected abstract List<Resume> getAll();
 }

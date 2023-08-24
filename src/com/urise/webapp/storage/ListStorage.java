@@ -35,7 +35,7 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    public List<Resume> getNotSorted() {
+    public List<Resume> getAll() {
         return STORAGE;
     }
 
