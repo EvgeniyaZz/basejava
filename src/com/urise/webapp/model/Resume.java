@@ -36,7 +36,7 @@ public class Resume {
         return fullName;
     }
 
-    public void setContact(ContactType type, String text) {
+    public void addContact(ContactType type, String text) {
         contacts.put(type, text);
     }
 
@@ -44,7 +44,7 @@ public class Resume {
         return contacts.get(type);
     }
 
-    public void setSections(SectionType type, Section text) {
+    public void addSection(SectionType type, Section text) {
         sections.put(type, text);
     }
 

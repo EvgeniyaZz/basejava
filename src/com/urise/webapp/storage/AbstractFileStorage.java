@@ -32,7 +32,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
                 doDelete(s, file);
             }
         } else {
-            throw new NullPointerException(directory.getAbsolutePath() + " is not directory or not readable/writable");
+            throw new StorageException(directory.getAbsolutePath() + " is not directory or not readable/writable", null);
         }
     }
 
@@ -41,7 +41,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             doWrite(resume, file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("File write error", file.getName(), e);
         }
     }
 
@@ -49,10 +49,10 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     protected void doSave(Resume resume, File file) {
         try {
             file.createNewFile();
-            doWrite(resume, file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("Couldn't create file" + file.getAbsolutePath(), file.getName(), e);
         }
+        doUpdate(resume, file);
     }
 
     @Override
@@ -60,13 +60,15 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             return doRead(file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("File read error", file.getName(), e);
         }
     }
 
     @Override
     protected void doDelete(String uuid, File file) {
-        file.delete();
+        if(!file.delete()) {
+            throw new StorageException("File delete error", file.getName());
+        }
     }
 
     @Override
@@ -79,7 +81,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
                 allResume.add(doGet(file));
             }
         } else {
-            throw new NullPointerException(directory.getAbsolutePath() + " is not directory or not readable/writable");
+            throw new StorageException(directory.getAbsolutePath() + " is not directory or not readable/writable", null);
         }
         return allResume;
     }
@@ -90,7 +92,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         if (list != null) {
             return list.length;
         } else {
-            throw new NullPointerException(directory.getAbsolutePath() + " is not directory or not readable/writable");
+            throw new StorageException(directory.getAbsolutePath() + " is not directory or not readable/writable", null);
         }
     }
 
