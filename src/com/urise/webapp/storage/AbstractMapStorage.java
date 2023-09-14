@@ -16,11 +16,6 @@ public abstract class AbstractMapStorage<Object> extends AbstractStorage<Object>
     }
 
     @Override
-    protected void doDelete(String uuid, Object searchKey) {
-        STORAGE.remove(uuid);
-    }
-
-    @Override
     public List<Resume> getAll() {
         return STORAGE.values().stream().toList();
     }

@@ -35,7 +35,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
         return storage[searchKey];
     }
 
-    public final void doDelete(String uuid, Integer searchKey) {
+    public final void doDelete(Integer searchKey) {
         fillDeletedElement(searchKey);
         storage[quantityResume - 1] = null;
         quantityResume--;

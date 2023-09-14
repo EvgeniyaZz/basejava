@@ -30,8 +30,8 @@ public class ListStorage extends AbstractStorage<Integer> {
     }
 
     @Override
-    public void doDelete(String uuid, Integer searchKey) {
-        STORAGE.remove(get(uuid));
+    public void doDelete(Integer searchKey) {
+        STORAGE.remove(searchKey.intValue());
     }
 
     @Override

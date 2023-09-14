@@ -17,6 +17,11 @@ public class MapUuidStorage extends AbstractMapStorage<String> {
     }
 
     @Override
+    protected void doDelete(String searchKey) {
+        STORAGE.remove(searchKey);
+    }
+
+    @Override
     protected Resume doGet(String searchKey) {
         return STORAGE.get(searchKey);
     }

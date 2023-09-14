@@ -8,8 +8,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class AbstractStorageTest {
+import java.io.File;
 
+public abstract class AbstractStorageTest {
+    protected static final File STORAGE_DIR = new File("D:\\Java\\basejava\\storage");
     private static final String FULL_NAME_1 = "Захарова Евгения";
     private static final String FULL_NAME_2 = "Макаров Александр";
     private static final String FULL_NAME_3 = "Губина Вероника";

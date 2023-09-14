@@ -31,24 +31,22 @@ public class MainFile {
         }
 
         // Homework lesson 8
+        // Change lesson 9
         String filePath2 = "D:\\Java\\basejava";
-        list(filePath2);
+        File dir2 = new File(filePath2);
+        list(dir2, 0);
     }
 
-    public static void list(String filePath) {
-        File dir = new File(filePath);
+    public static void list(File dir, int indention) {
         String[] listDir = dir.list();
         if(listDir != null) {
             for (String s : listDir) {
-                File file1 = new File(filePath + File.separator + s);
+                File file1 = new File(dir + File.separator + s);
                 if (file1.isDirectory()) {
-                    list(filePath + File.separator + s);
+                    System.out.println("  ".repeat(indention) + "Directory: " + file1.getName());
+                    list(file1, indention + 1);
                 } else {
-                    try {
-                        System.out.println(file1.getCanonicalPath());
-                    } catch (IOException e) {
-                        throw new RuntimeException("Error", e);
-                    }
+                    System.out.println("  ".repeat(indention) + "File: " + file1.getName());
                 }
             }
         }
