@@ -28,14 +28,8 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        String[] list = directory.list();
-        if (list != null) {
-            for (String s : list) {
-                File file = new File(directory + File.separator + s);
-                doDelete(file);
-            }
-        } else {
-            throw new StorageException(directory.getAbsolutePath() + " is not directory or not readable/writable", null);
+        for (File file : createListFiles()) {
+            doDelete(file);
         }
     }
 
@@ -69,7 +63,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     protected void doDelete(File file) {
-        if(!file.delete()) {
+        if (!file.delete()) {
             throw new StorageException("File delete error", file.getName());
         }
     }
@@ -77,26 +71,15 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> getAll() {
         List<Resume> allResume = new ArrayList<>();
-        String[] list = directory.list();
-        if (list != null) {
-            for (String s : list) {
-                File file = new File(directory + File.separator + s);
-                allResume.add(doGet(file));
-            }
-        } else {
-            throw new StorageException(directory.getAbsolutePath() + " is not directory or not readable/writable", null);
+        for (File file : createListFiles()) {
+            allResume.add(doGet(file));
         }
         return allResume;
     }
 
     @Override
     public int size() {
-        String[] list = directory.list();
-        if (list != null) {
-            return list.length;
-        } else {
-            throw new StorageException(directory.getAbsolutePath() + " is not directory or not readable/writable", null);
-        }
+        return createListFiles().length;
     }
 
     @Override
@@ -107,5 +90,14 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected File getSearchKey(String uuid) {
         return new File(directory, uuid);
+    }
+
+    private File[] createListFiles() {
+        File[] list = directory.listFiles();
+        if (list != null) {
+            return list;
+        } else {
+            throw new StorageException(directory.getAbsolutePath() + " is not directory or not readable/writable", null);
+        }
     }
 }

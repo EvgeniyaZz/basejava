@@ -27,11 +27,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public void clear() {
-        try {
-            Files.list(directory).forEach(this::doDelete);
-        } catch (IOException e) {
-            throw new StorageException("Path delete error", null);
-        }
+        createListPaths().forEach(this::doDelete);
     }
 
     @Override
@@ -74,21 +70,13 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected List<Resume> getAll() {
         List<Resume> allResume = new ArrayList<>();
-        try {
-            Files.list(directory).forEach(path -> allResume.add(doGet(path)));
-        } catch (IOException e) {
-            throw new StorageException(directory + " is not directory or not readable/writable", null);
-        }
+        createListPaths().forEach(path -> allResume.add(doGet(path)));
         return allResume;
     }
 
     @Override
     public int size() {
-        try {
-            return Files.list(directory).toList().size();
-        } catch (IOException e) {
-            throw new StorageException(directory + " is not directory or not readable/writable", null);
-        }
+        return createListPaths().size();
     }
 
     @Override
@@ -99,5 +87,13 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected Path getSearchKey(String uuid) {
         return directory.resolve(uuid);
+    }
+
+    private List<Path> createListPaths() {
+        try {
+            return Files.list(directory).toList();
+        } catch (IOException e) {
+            throw new StorageException(directory + " is not directory or not readable/writable", null);
+        }
     }
 }
