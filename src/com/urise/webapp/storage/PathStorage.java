@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
     private final Path directory;
@@ -27,7 +28,7 @@ public class PathStorage extends AbstractStorage<Path> {
 
     @Override
     public void clear() {
-        createListPaths().forEach(this::doDelete);
+        getListPaths().forEach(this::doDelete);
     }
 
     @Override
@@ -70,13 +71,13 @@ public class PathStorage extends AbstractStorage<Path> {
     @Override
     protected List<Resume> getAll() {
         List<Resume> allResume = new ArrayList<>();
-        createListPaths().forEach(path -> allResume.add(doGet(path)));
+        getListPaths().forEach(path -> allResume.add(doGet(path)));
         return allResume;
     }
 
     @Override
     public int size() {
-        return createListPaths().size();
+        return (int) getListPaths().count();
     }
 
     @Override
@@ -89,9 +90,9 @@ public class PathStorage extends AbstractStorage<Path> {
         return directory.resolve(uuid);
     }
 
-    private List<Path> createListPaths() {
+    private Stream<Path> getListPaths() {
         try {
-            return Files.list(directory).toList();
+            return Files.list(directory);
         } catch (IOException e) {
             throw new StorageException(directory + " is not directory or not readable/writable", null);
         }

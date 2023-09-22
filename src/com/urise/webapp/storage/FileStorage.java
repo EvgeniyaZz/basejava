@@ -28,7 +28,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        for (File file : createListFiles()) {
+        for (File file : getListFiles()) {
             doDelete(file);
         }
     }
@@ -71,7 +71,7 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> getAll() {
         List<Resume> allResume = new ArrayList<>();
-        for (File file : createListFiles()) {
+        for (File file : getListFiles()) {
             allResume.add(doGet(file));
         }
         return allResume;
@@ -79,7 +79,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-        return createListFiles().length;
+        return getListFiles().length;
     }
 
     @Override
@@ -92,12 +92,11 @@ public class FileStorage extends AbstractStorage<File> {
         return new File(directory, uuid);
     }
 
-    private File[] createListFiles() {
-        File[] list = directory.listFiles();
-        if (list != null) {
-            return list;
-        } else {
+    private File[] getListFiles() {
+        File[] files = directory.listFiles();
+        if (files == null) {
             throw new StorageException(directory.getAbsolutePath() + " is not directory or not readable/writable", null);
         }
+        return files;
     }
 }
