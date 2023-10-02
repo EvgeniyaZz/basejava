@@ -34,19 +34,19 @@ public class MainFile {
         // Change lesson 9
         String filePath2 = "D:\\Java\\basejava";
         File dir2 = new File(filePath2);
-        list(dir2, 0);
+        list(dir2, "");
     }
 
-    public static void list(File dir, int indention) {
+    public static void list(File dir, String indention) {
         String[] listDir = dir.list();
         if(listDir != null) {
             for (String s : listDir) {
                 File file1 = new File(dir + File.separator + s);
                 if (file1.isDirectory()) {
-                    System.out.println("  ".repeat(indention) + "Directory: " + file1.getName());
-                    list(file1, indention + 1);
+                    System.out.println(indention + "Directory: " + file1.getName());
+                    list(file1, indention + "  ");
                 } else {
-                    System.out.println("  ".repeat(indention) + "File: " + file1.getName());
+                    System.out.println(indention + "File: " + file1.getName());
                 }
             }
         }

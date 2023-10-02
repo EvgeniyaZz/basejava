@@ -1,9 +1,14 @@
 package com.urise.webapp.model;
 
-import java.io.Serial;
+import com.urise.webapp.util.LocalDateAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -11,19 +16,32 @@ import java.util.Objects;
 import static com.urise.webapp.util.DateUtil.NOW;
 import static com.urise.webapp.util.DateUtil.of;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Company implements Serializable {
-    @Serial
+//    @Serial
     private static final long serialVersionUID = 1L;
 
-    private final Link homePage;
-    private final List<Period> period;
+    private Link homePage;
+    private List<Period> periods = new ArrayList<>();
+
+    public Company() {
+    }
 
     public Company(String name, String url, Period... period) {
         this(new Link(name, url), Arrays.asList(period));
     }
-    public Company(Link homePage, List<Period> period) {
+
+    public Company(Link homePage, List<Period> periods) {
         this.homePage = homePage;
-        this.period = period;
+        this.periods = periods;
+    }
+
+    public Link getHomePage() {
+        return homePage;
+    }
+
+    public List<Period> getPeriods() {
+        return periods;
     }
 
     @Override
@@ -31,27 +49,33 @@ public class Company implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Company company = (Company) o;
-        return Objects.equals(homePage, company.homePage) && Objects.equals(period, company.period);
+        return Objects.equals(homePage, company.homePage) && Objects.equals(periods, company.periods);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(homePage, period);
+        return Objects.hash(homePage, periods);
     }
 
     @Override
     public String toString() {
         return "Company{" +
                 "homePage=" + homePage +
-                ", period=" + period +
+                ", period=" + periods +
                 '}';
     }
 
-    public static class Period implements Serializable{
-        private final LocalDate startDate;
-        private final LocalDate endDate;
-        private final String title;
-        private final String description;
+    @XmlAccessorType(XmlAccessType.FIELD)
+    public static class Period implements Serializable {
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate startDate;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate endDate;
+        private String title;
+        private String description;
+
+        public Period() {
+        }
 
         public Period(int startYear, Month startMonth, String title, String description) {
             this(of(startYear, startMonth), NOW, title, description);
@@ -70,6 +94,7 @@ public class Company implements Serializable {
             this.title = title;
             this.description = description;
         }
+
         public LocalDate getStartDate() {
             return startDate;
         }
@@ -92,9 +117,9 @@ public class Company implements Serializable {
             if (o == null || getClass() != o.getClass()) return false;
             Period period = (Period) o;
             return Objects.equals(startDate, period.startDate)
-                   && Objects.equals(endDate, period.endDate)
-                   && Objects.equals(title, period.title)
-                   && Objects.equals(description, period.description);
+                    && Objects.equals(endDate, period.endDate)
+                    && Objects.equals(title, period.title)
+                    && Objects.equals(description, period.description);
         }
 
         @Override

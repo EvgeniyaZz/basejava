@@ -95,7 +95,7 @@ public class FileStorage extends AbstractStorage<File> {
     private File[] getListFiles() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException(directory.getAbsolutePath() + " is not directory or not readable/writable", null);
+            throw new StorageException(directory.getAbsolutePath() + " is not directory or not readable/writable");
         }
         return files;
     }
