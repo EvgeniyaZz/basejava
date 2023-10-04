@@ -6,6 +6,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -19,39 +20,36 @@ public class DataStreamSerializer implements Serializer {
 
             Map<ContactType, String> contacts = r.getContacts();
             dos.writeInt(contacts.size());
-            for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
+            writeWithException(contacts.entrySet(), dos, entry -> {
                 dos.writeUTF(entry.getKey().name());
                 dos.writeUTF(entry.getValue());
-            }
+            });
 
             Map<SectionType, Section> sections = r.getSections();
             dos.writeInt(sections.size());
-            for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
-                String sectionType = entry.getKey().name();
-                dos.writeUTF(sectionType);
+            writeWithException(sections.entrySet(), dos, entry -> {
+                SectionType sectionType = entry.getKey();
+                dos.writeUTF(sectionType.name());
                 switch (sectionType) {
-                    case "PERSONAL":
-                    case "OBJECTIVE":
+                    case PERSONAL:
+                    case OBJECTIVE:
                         dos.writeUTF(entry.getValue().toString());
                         break;
-                    case "ACHIEVEMENT":
-                    case "QUALIFICATIONS": {
+                    case ACHIEVEMENT:
+                    case QUALIFICATIONS: {
                         ListSection listSection = (ListSection) entry.getValue();
                         List<String> list = listSection.getList();
-                        int size = list.size();
-                        dos.writeInt(size);
-                        for (String s : list) {
-                            dos.writeUTF(s);
-                        }
+                        dos.writeInt(list.size());
+                        writeWithException(list, dos, dos::writeUTF);
                         break;
                     }
-                    case "EXPERIENCE":
-                    case "EDUCATION": {
+                    case EXPERIENCE:
+                    case EDUCATION: {
                         CompanySection companySection = (CompanySection) entry.getValue();
                         List<Company> companies = companySection.getCompanies();
                         int size = companies.size();
                         dos.writeInt(size);
-                        for (Company company : companies) {
+                        writeWithException(companies, dos, company -> {
                             Link homePage = company.getHomePage();
                             dos.writeUTF(homePage.getName());
                             String website = homePage.getWebsite();
@@ -64,7 +62,7 @@ public class DataStreamSerializer implements Serializer {
                             List<Company.Period> periods = company.getPeriods();
                             int sizePeriods = periods.size();
                             dos.writeInt(sizePeriods);
-                            for (Company.Period period : periods) {
+                            writeWithException(periods, dos, period -> {
                                 dos.writeInt(period.getStartDate().getYear());
                                 dos.writeUTF(period.getStartDate().getMonth().name());
                                 dos.writeInt(period.getEndDate().getYear());
@@ -77,12 +75,12 @@ public class DataStreamSerializer implements Serializer {
                                 } else {
                                     dos.writeInt(0);
                                 }
-                            }
-                        }
+                            });
+                        });
                         break;
                     }
                 }
-            }
+            });
         }
     }
 
@@ -146,6 +144,17 @@ public class DataStreamSerializer implements Serializer {
                 }
             }
             return resume;
+        }
+    }
+
+    @FunctionalInterface
+    public interface WriteElement<T> {
+        void write(T t) throws IOException;
+    }
+
+    public <T> void writeWithException(Collection<T> collection, DataOutputStream dos, WriteElement<T> writeElement) throws IOException {
+        for (T t : collection) {
+            writeElement.write(t);
         }
     }
 }
