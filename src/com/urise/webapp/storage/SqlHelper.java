@@ -9,11 +9,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class SqlHelper {
+
+    public static ConnectionFactory connectionFactory;
+
     public interface Helper<T> {
         T execute(PreparedStatement ps) throws SQLException;
     }
 
-    public static <T> T execute(String command, ConnectionFactory connectionFactory, Helper<T> helper) {
+    public static <T> T execute(String command, Helper<T> helper) {
         try (Connection conn = connectionFactory.getConnection();
              PreparedStatement ps = conn.prepareStatement(command)) {
             return helper.execute(ps);
