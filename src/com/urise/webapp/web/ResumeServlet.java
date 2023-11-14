@@ -4,24 +4,20 @@ import com.urise.webapp.Config;
 import com.urise.webapp.model.Resume;
 import com.urise.webapp.storage.Storage;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 public class ResumeServlet extends HttpServlet {
 
-    private final Storage storage;
+    private Storage storage;
 
-    public ResumeServlet() {
-        try {
-            Class.forName("org.postgresql.Driver").getDeclaredConstructor().newInstance();
-        } catch (ClassNotFoundException | InvocationTargetException | InstantiationException | IllegalAccessException |
-                 NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
         storage = Config.get().getStorage();
     }
 

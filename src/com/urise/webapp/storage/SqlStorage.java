@@ -5,7 +5,10 @@ import com.urise.webapp.model.*;
 import com.urise.webapp.sql.SqlHelper;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class SqlStorage implements Storage {
@@ -14,6 +17,11 @@ public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
     }
 
@@ -106,8 +114,8 @@ public class SqlStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         LOG.info("GetAllSorted");
-        Map<String, Resume> map = new LinkedHashMap<>();
-        sqlHelper.transactionalExecute(conn -> {
+        return sqlHelper.transactionalExecute(conn -> {
+            Map<String, Resume> map = new LinkedHashMap<>();
             try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid")) {
                 ResultSet rs = ps.executeQuery();
                 while (rs.next()) {
@@ -130,9 +138,8 @@ public class SqlStorage implements Storage {
                     addSection(map.get(uuid), rs);
                 }
             }
-            return null;
+            return new ArrayList<>(map.values());
         });
-        return new ArrayList<>(map.values());
     }
 
     @Override
@@ -183,13 +190,10 @@ public class SqlStorage implements Storage {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS: {
-                        StringBuilder value = new StringBuilder();
                         ListSection listSection = (ListSection) e.getValue();
                         List<String> list = listSection.getList();
-                        for (String s : list) {
-                            value.append(s).append("\n");
-                        }
-                        ps.setString(3, value.toString());
+                        String value = String.join("\n", list);
+                        ps.setString(3, value);
                         break;
                     }
                 }
