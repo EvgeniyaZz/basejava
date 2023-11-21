@@ -3,6 +3,7 @@ package com.urise.webapp.storage;
 import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.*;
 import com.urise.webapp.sql.SqlHelper;
+import com.urise.webapp.util.JsonParser;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -151,15 +152,16 @@ public class SqlStorage implements Storage {
         });
     }
 
-    private static void deleteContacts(Resume r, Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("DELETE FROM contact WHERE resume_uuid =?")) {
-            ps.setString(1, r.getUuid());
-            ps.execute();
-        }
+    private void deleteContacts(Resume r, Connection conn) throws SQLException {
+        deleteAttributes(r, conn,"DELETE FROM contact WHERE resume_uuid =?");
     }
 
     private void deleteSections(Resume r, Connection conn) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("DELETE FROM section WHERE resume_uuid =?")) {
+        deleteAttributes(r, conn,"DELETE FROM section WHERE resume_uuid =?");
+    }
+
+    private void deleteAttributes(Resume r, Connection conn, String sql) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, r.getUuid());
             ps.execute();
         }
@@ -181,22 +183,9 @@ public class SqlStorage implements Storage {
         try (PreparedStatement ps = conn.prepareStatement("INSERT INTO section (resume_uuid, type, value) VALUES (?,?,?)")) {
             for (Map.Entry<SectionType, Section> e : r.getSections().entrySet()) {
                 ps.setString(1, r.getUuid());
-                SectionType sectionType = e.getKey();
-                ps.setString(2, sectionType.name());
-                switch (sectionType) {
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        ps.setString(3, String.valueOf(e.getValue()));
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATIONS: {
-                        ListSection listSection = (ListSection) e.getValue();
-                        List<String> list = listSection.getList();
-                        String value = String.join("\n", list);
-                        ps.setString(3, value);
-                        break;
-                    }
-                }
+                ps.setString(2, e.getKey().name());
+                Section section = e.getValue();
+                ps.setString(3, JsonParser.write(section, Section.class));
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -211,20 +200,10 @@ public class SqlStorage implements Storage {
     }
 
     private void addSection(Resume r, ResultSet rs) throws SQLException {
-        String type = rs.getString("type");
-        if (type != null) {
-            SectionType sectionType = SectionType.valueOf(type);
-            switch (sectionType) {
-                case PERSONAL:
-                case OBJECTIVE:
-                    r.addSection(sectionType, new TextSection(rs.getString("value")));
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATIONS: {
-                    String[] list = rs.getString("value").split("\n");
-                    r.addSection(sectionType, new ListSection(list));
-                }
-            }
+        String value = rs.getString("value");
+        if (value != null) {
+            SectionType sectionType = SectionType.valueOf(rs.getString("type"));
+            r.addSection(sectionType, JsonParser.read(value, Section.class));
         }
     }
 }

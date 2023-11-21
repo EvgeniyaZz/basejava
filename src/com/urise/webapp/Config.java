@@ -10,7 +10,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class Config {
-    private static final File PROPS = new File("/home/evgeniya/java/basejava/config/resumes.properties");
+    private static final File PROPS = new File("D:/Java/basejava/config/resumes.properties");
     private static final Config INSTANCE = new Config();
 
     private final File storageDir;
@@ -21,7 +21,7 @@ public class Config {
     }
 
     private Config() {
-        try (InputStream is = new FileInputStream(PROPS)) {
+       try (InputStream is = new FileInputStream(PROPS)) {
             Properties props = new Properties();
             props.load(is);
             storageDir = new File(props.getProperty("storage.dir"));
