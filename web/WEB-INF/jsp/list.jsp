@@ -29,6 +29,8 @@
         </c:forEach>
     </table>
 </section>
+<p>
+<button onclick="window.location.href = 'http://localhost:8080/resumes/resume?uuid=new&action=edit'">Добавить резюме</button>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>

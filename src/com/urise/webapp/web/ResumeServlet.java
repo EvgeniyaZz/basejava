@@ -1,6 +1,7 @@
 package com.urise.webapp.web;
 
 import com.urise.webapp.Config;
+import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.model.*;
 import com.urise.webapp.storage.Storage;
 
@@ -10,6 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ResumeServlet extends HttpServlet {
 
@@ -25,8 +29,14 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume r = storage.get(uuid);
-        r.setFullName(fullName);
+        Resume r;
+        try {
+            r = storage.get(uuid);
+            r.setFullName(fullName);
+        } catch (NotExistStorageException e) {
+            r = new Resume(uuid, fullName);
+            storage.save(r);
+        }
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && value.trim().length() != 0) {
@@ -45,7 +55,9 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        r.addSection(type, new ListSection(value.split("\r\n")));
+                        List<String> list = Arrays.stream(value.split("\r\n")).filter(item -> !item.equals(""))
+                                .collect(Collectors.toList());
+                        r.addSection(type, new ListSection(list));
                         break;
                 }
             } else {
@@ -72,7 +84,11 @@ public class ResumeServlet extends HttpServlet {
                 return;
             case "view":
             case "edit":
-                r = storage.get(uuid);
+                if (uuid.equals("new")) {
+                    r = new Resume("");
+                } else {
+                    r = storage.get(uuid);
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Action " + action + " is illegal");
