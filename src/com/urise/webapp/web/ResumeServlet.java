@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,6 +50,7 @@ public class ResumeServlet extends HttpServlet {
         }
         for (SectionType type : SectionType.values()) {
             String value = request.getParameter(type.name());
+            String[] values = request.getParameterValues(type.name());
             if (value != null && value.trim().length() != 0) {
                 switch (type) {
                     case OBJECTIVE:
@@ -59,6 +63,31 @@ public class ResumeServlet extends HttpServlet {
                                 .collect(Collectors.toList());
                         r.addSection(type, new ListSection(list));
                         break;
+                    case EDUCATION:
+                    case EXPERIENCE:
+                        List<Company> companies = new ArrayList<>();
+                        String[] websites = request.getParameterValues("website");
+                        for (int i = 0; i < values.length; i++) {
+                            String name = values[i];
+                            String website = websites[i];
+
+                            List<Company.Period> periods = new ArrayList<>();
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
+
+                            String[] startDates = request.getParameterValues(type + "" + (i + 1) + "startDate");
+                            String[] endDates = request.getParameterValues(type + "" + (i + 1) + "endDate");
+                            String[] titles = request.getParameterValues(type + "" + (i + 1) + "title");
+                            String[] descriptions = request.getParameterValues(type + "" + (i + 1) + "description");
+                            for (int j = 0; j < titles.length; j++) {
+                                if (!titles[j].equals("") && !startDates[j].equals("") && !endDates[j].equals("")) {
+                                    periods.add(new Company.Period(LocalDate.parse("1/" + startDates[j], formatter),
+                                            LocalDate.parse("1/" + endDates[j], formatter), titles[j], descriptions[j]));
+                                }
+                            }
+                            companies.add(new Company(new Link(name, website), periods));
+                        }
+
+                        r.addSection(type, new CompanySection(companies));
                 }
             } else {
                 r.getSections().remove(type);

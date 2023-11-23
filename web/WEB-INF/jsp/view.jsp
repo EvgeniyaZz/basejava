@@ -1,3 +1,6 @@
+<%@ page import="java.lang.String" %>
+<%@ page import="com.urise.webapp.model.CompanySection" %>
+<%@ page import="java.time.LocalDate" %>
 <%@ page import="com.urise.webapp.model.ListSection" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -36,6 +39,24 @@
             </div>
         </c:when>
         <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
+            <table>
+                <c:forEach var="company" items="<%=((CompanySection) sectionEntry.getValue()).getCompanies()%>">
+                    <p>
+                    <div><a href="${company.homePage.website}">${company.homePage.name}</a></div>
+                    <c:forEach var="period" items="${company.periods}">
+                        <p>
+                        <c:if test="${period.endDate < LocalDate.now()}">
+                            <div>${String.format("%02d",period.startDate.month.value)}/${period.startDate.year}
+                                - ${String.format("%02d",period.endDate.month.value)}/${period.endDate.year}</div>
+                        </c:if>
+                        <c:if test="${period.endDate >= LocalDate.now()}">
+                            <div>${String.format("%02d",period.startDate.month.value)}/${period.startDate.year} - Cейчас</div>
+                        </c:if>
+                        <div>${period.title}</div>
+                        <div>${period.description}</div>
+                    </c:forEach>
+                </c:forEach>
+            </table>
         </c:when>
     </c:choose>
     </c:forEach>

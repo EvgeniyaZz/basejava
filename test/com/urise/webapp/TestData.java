@@ -42,9 +42,5 @@ public class TestData {
                         new Company("Organization12", "http://Organization12.ru")));
         R2.addContact(ContactType.SKYPE, "skype2");
         R2.addContact(ContactType.PHONE, "22222");
-        R1.addSection(SectionType.EXPERIENCE,
-                new CompanySection(
-                        new Company("Organization2", "http://Organization2.ru",
-                                new Company.Period(2015, Month.JANUARY, "position1", "content1"))));
     }
 }
