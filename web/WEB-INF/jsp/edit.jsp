@@ -34,6 +34,27 @@
             <c:set var="section" value="${resume.getSection(type)}"/>
             <dl>
                 <dt>${type.title}</dt>
+                <c:if test="${section == null}">
+                    <c:choose>
+                        <c:when test="${type=='PERSONAL' || type== 'OBJECTIVE' || type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
+                            <dd><textarea name="${type.name()}">${null}</textarea></dd>
+                        </c:when>
+                        <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
+                            <dd><input type="text" placeholder="Название" name="${type.name()}" size=30 value="${null}">
+                            </dd>
+                            <dd><input type="text" placeholder="Сайт" name="website" size=30 value="${null}"></dd>
+                            <p>
+                            <dd><input type="text" placeholder="Начало" name="${type.name()}0startDate" size=10
+                                       value="${null}">
+                                <input type="text" placeholder="Окончание" name="${type.name()}0endDate" size=10
+                                       value="${null}"></dd>
+                            <dd><input type="text" placeholder="Заголовок" name="${type.name()}0title" size=30
+                                       value="${null}"></dd>
+                            <dd><textarea placeholder="Описание" name="${type.name()}0description">${null}</textarea>
+                            </dd>
+                        </c:when>
+                    </c:choose>
+                </c:if>
                 <c:if test="${section != null}">
                     <jsp:useBean id="section" type="com.urise.webapp.model.Section"/>
                     <c:choose>
@@ -46,6 +67,18 @@
                             </dd>
                         </c:when>
                         <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
+                            <dd><input type="text" placeholder="Название" name="${type.name()}" size=30 value="${null}">
+                            </dd>
+                            <dd><input type="text" placeholder="Сайт" name="website" size=30 value="${null}"></dd>
+                            <p>
+                            <dd><input type="text" placeholder="Начало" name="${type.name()}0startDate" size=10
+                                       value="${null}">
+                                <input type="text" placeholder="Окончание" name="${type.name()}0endDate" size=10
+                                       value="${null}"></dd>
+                            <dd><input type="text" placeholder="Заголовок" name="${type.name()}0title" size=30
+                                       value="${null}"></dd>
+                            <dd><textarea placeholder="Описание" name="${type.name()}0description">${null}</textarea>
+                            </dd>
                             <c:forEach var="company" items="<%=((CompanySection)section).getCompanies()%>"
                                        varStatus="count">
                                 <p>
@@ -54,6 +87,19 @@
                                 </dd>
                                 <dd><input type="text" placeholder="Сайт" name="website" size=30
                                            value="${company.homePage.website}"></dd>
+                                <p>
+                                <dd><input type="text" placeholder="Начало"
+                                           name="${type.name()}${count.count}startDate" size=10
+                                           value="${null}">
+                                    <input type="text" placeholder="Окончание"
+                                           name="${type.name()}${count.count}endDate" size=10
+                                           value="${null}"></dd>
+                                <dd><input type="text" placeholder="Заголовок"
+                                           name="${type.name()}${count.count}title" size=30
+                                           value="${null}"></dd>
+                                <dd><textarea placeholder="Описание"
+                                              name="${type.name()}${count.count}description">${null}</textarea>
+                                </dd>
                                 <c:if test="${company.periods.size() != 0}">
                                     <c:forEach var="period" items="${company.periods}">
                                         <p>
@@ -72,43 +118,7 @@
                                         </dd>
                                     </c:forEach>
                                 </c:if>
-                                <c:if test="${company.periods.size() == 0}">
-                                    <p>
-                                    <dd><input type="text" placeholder="Начало"
-                                               name="${type.name()}${count.count}startDate" size=10
-                                               value="${null}">
-                                        <input type="text" placeholder="Окончание"
-                                               name="${type.name()}${count.count}endDate" size=10
-                                               value="${null}"></dd>
-                                    <dd><input type="text" placeholder="Заголовок"
-                                               name="${type.name()}${count.count}title" size=30
-                                               value="${null}"></dd>
-                                    <dd><textarea placeholder="Описание"
-                                                  name="${type.name()}${count.count}description">${null}</textarea>
-                                    </dd>
-                                </c:if>
                             </c:forEach>
-                        </c:when>
-                    </c:choose>
-                </c:if>
-                <c:if test="${section == null}">
-                    <c:choose>
-                        <c:when test="${type=='PERSONAL' || type== 'OBJECTIVE' || type=='ACHIEVEMENT' || type=='QUALIFICATIONS'}">
-                            <dd><textarea name="${type.name()}">${null}</textarea></dd>
-                        </c:when>
-                        <c:when test="${type=='EXPERIENCE' || type=='EDUCATION'}">
-                            <dd><input type="text" placeholder="Название" name="${type.name()}" size=30 value="${null}">
-                            </dd>
-                            <dd><input type="text" placeholder="Сайт" name="website" size=30 value="${null}"></dd>
-                            <p>
-                            <dd><input type="text" placeholder="Начало" name="${type.name()}1startDate" size=10
-                                       value="${null}">
-                                <input type="text" placeholder="Окончание" name="${type.name()}1endDate" size=10
-                                       value="${null}"></dd>
-                            <dd><input type="text" placeholder="Заголовок" name="${type.name()}1title" size=30
-                                       value="${null}"></dd>
-                            <dd><textarea placeholder="Описание" name="${type.name()}1description">${null}</textarea>
-                            </dd>
                         </c:when>
                     </c:choose>
                 </c:if>
